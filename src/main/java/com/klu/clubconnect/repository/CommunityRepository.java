@@ -1,0 +1,12 @@
+package com.klu.clubconnect.repository;
+
+import com.klu.clubconnect.model.Community;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface CommunityRepository extends JpaRepository<Community, Long> {
+    List<Community> findByCategory(String category);
+    List<Community> findByActiveTrue();
+}
