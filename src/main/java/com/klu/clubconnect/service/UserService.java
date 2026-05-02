@@ -24,8 +24,6 @@ public class UserService {
     private JwtUtil jwtUtil;
     
     public LoginResponse login(LoginRequest request) {
-        System.out.println("Login attempt for email: " + request.getEmail());
-        
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         
         if (userOpt.isEmpty()) {
@@ -34,15 +32,11 @@ public class UserService {
         
         User user = userOpt.get();
         
-        System.out.println("User found - Name: " + user.getName() + ", Role: " + user.getRole());
-        
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
         
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-        
-        System.out.println("Login success - Returning role: " + user.getRole());
         
         return new LoginResponse(
             token, "Bearer", user.getId(), user.getName(),
@@ -61,23 +55,22 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhone(request.getPhone());
         user.setDob(request.getDob());
+        user.setCollege(request.getCollege());
+        user.setYear(request.getYear());
+        user.setDepartment(request.getDepartment());
         
+        // ✅ ADMIN or STUDENT based on adminId
         if (request.getAdminId() != null && !request.getAdminId().isEmpty()) {
             user.setRole("ADMIN");
-            user.setStatus("ACTIVE");
-            user.setCollege("Admin");
-            user.setYear("Staff");
-            user.setDepartment("Administration");
             user.setAvatar("👑");
-            System.out.println("Creating ADMIN user: " + request.getEmail());
+            user.setStatus("ACTIVE");
         } else {
             user.setRole("STUDENT");
-            user.setCollege(request.getCollege());
-            user.setYear(request.getYear());
-            user.setDepartment(request.getDepartment());
             user.setAvatar("👨‍🎓");
-            System.out.println("Creating STUDENT user: " + request.getEmail());
+            user.setStatus("ACTIVE");
         }
+        
+        user.setTotalPoints(0);
         
         return userRepository.save(user);
     }

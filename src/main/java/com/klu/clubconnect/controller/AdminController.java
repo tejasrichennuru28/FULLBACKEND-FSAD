@@ -19,63 +19,24 @@ public class AdminController {
     @Autowired
     private RegistrationRepository registrationRepository;
 
-    // Get all students
     @GetMapping("/students")
     public List<User> getAllStudents() {
-        List<User> allUsers = userRepository.findAll();
-        return allUsers.stream()
-                .filter(user -> "STUDENT".equals(user.getRole()))
-                .toList();
+        return userRepository.findAll();
     }
 
-    // Get student by ID
-    @GetMapping("/students/{id}")
-    public User getStudentById(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-    }
-
-    // Toggle student status (Block/Unblock)
-    @PutMapping("/students/{id}/status")
-    public User toggleStudentStatus(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-        
-        if ("ACTIVE".equals(user.getStatus())) {
-            user.setStatus("BLOCKED");
-        } else {
-            user.setStatus("ACTIVE");
-        }
-        
-        return userRepository.save(user);
-    }
-
-    // Get all registrations
     @GetMapping("/registrations")
     public List<Registration> getAllRegistrations() {
         return registrationRepository.findAll();
     }
 
-    // Get statistics
-    @GetMapping("/stats")
-    public StatsResponse getStats() {
-        long totalStudents = userRepository.findAll().stream()
-                .filter(user -> "STUDENT".equals(user.getRole()))
-                .count();
-        
-        return new StatsResponse(totalStudents);
-    }
-
-    // Stats Response class
-    static class StatsResponse {
-        private final long totalStudents;
-        
-        public StatsResponse(long totalStudents) {
-            this.totalStudents = totalStudents;
+    @PutMapping("/students/{id}/status")
+    public User toggleStatus(@PathVariable Long id) {
+        User user = userRepository.findById(id).get();
+        if ("ACTIVE".equals(user.getStatus())) {
+            user.setStatus("BLOCKED");
+        } else {
+            user.setStatus("ACTIVE");
         }
-        
-        public long getTotalStudents() {
-            return totalStudents;
-        }
+        return userRepository.save(user);
     }
 }

@@ -9,9 +9,8 @@ public class LoginResponse {
     private String role;
     private String avatar;
     private Integer totalPoints;
-    
-    // Constructor
-    public LoginResponse(String token, String type, Long id, String name, 
+
+    public LoginResponse(String token, String type, Long id, String name,
                          String email, String role, String avatar, Integer totalPoints) {
         this.token = token;
         this.type = type;
@@ -22,8 +21,7 @@ public class LoginResponse {
         this.avatar = avatar;
         this.totalPoints = totalPoints;
     }
-    
-    // Getters
+
     public String getToken() { return token; }
     public String getType() { return type; }
     public Long getId() { return id; }
@@ -33,7 +31,6 @@ public class LoginResponse {
     public String getAvatar() { return avatar; }
     public Integer getTotalPoints() { return totalPoints; }
     
-    // Setters
     public void setToken(String token) { this.token = token; }
     public void setType(String type) { this.type = type; }
     public void setId(Long id) { this.id = id; }
